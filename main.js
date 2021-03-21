@@ -88,7 +88,6 @@ function initGraphics() {
 	camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
 
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color( 0xFFFFFF );
 
 	camera.position.set( - 14, 8, 16 );
 
@@ -106,7 +105,7 @@ function initGraphics() {
 
 	var light = new THREE.DirectionalLight( 0xffffff, 1 );
 	light.position.set( - 10, 18, 5 );
-	light.castShadow = false;
+	light.castShadow = true;
 	var d = 14;
 	light.shadow.camera.left = - d;
 	light.shadow.camera.right = d;
@@ -168,18 +167,11 @@ function createObjects() {
 	// Ground
 	pos.set( 0, - 0.5, 0 );
 	quat.set( 0, 0, 0, 1 );
-	var ground = createParalellepipedWithPhysics( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
-	ground.receiveShadow = false;
-	textureLoader.load( "textures/grid.png", function ( texture ) {
-
-		texture.wrapS = THREE.RepeatWrapping;
-		texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.set( 40, 40 );
-		ground.material.map = texture;
-		ground.material.needsUpdate = true;
-		ground.material.opacity = 0;
-
-	} );
+	var ground = createParalellepipedWithPhysics( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial() );
+	ground.receiveShadow = true;
+	ground.material.transparent = true;
+	ground.material.opacity = 0;
+	ground.material.needsUpdate = true;
 
 	// Tower 1
 	var towerMass = 1000;
@@ -204,8 +196,8 @@ function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material 
 
 function createDebrisFromBreakableObject( object ) {
 
-	object.castShadow = false;
-	object.receiveShadow = false;
+	object.castShadow = true;
+	object.receiveShadow = true;
 
 	var shape = createConvexHullPhysicsShape( object.geometry.attributes.position.array );
 	shape.setMargin( margin );
@@ -339,8 +331,8 @@ function initInput() {
 		var ballRadius = 0.4;
 
 		var ball = new THREE.Mesh( new THREE.SphereBufferGeometry( ballRadius, 14, 10 ), ballMaterial );
-		ball.castShadow = false;
-		ball.receiveShadow = false;
+		ball.castShadow = true;
+		ball.receiveShadow = true;
 		var ballShape = new Ammo.btSphereShape( ballRadius );
 		ballShape.setMargin( margin );
 		pos.copy( raycaster.ray.direction );
@@ -473,6 +465,7 @@ function updatePhysics( deltaTime ) {
 
 		var fractureImpulse = 250;
 		container.style.opacity = 1;
+		document.getElementById("capture").style.opacity = 0;
 
 		if ( breakable0 && ! collided0 && maxImpulse > fractureImpulse ) {
 
