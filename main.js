@@ -323,7 +323,7 @@ function createMaterial( color ) {
 
 function initInput() {
 
-	window.addEventListener( 'mousedown', function ( event ) {
+	container.addEventListener( 'mousedown', function ( event ) {
 
 		mouseCoords.set(
 			( event.clientX / window.innerWidth ) * 2 - 1,
