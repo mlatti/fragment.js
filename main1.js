@@ -21,8 +21,8 @@ html2canvas(document.querySelector("#capture")).then(canvas => {
 	} );
 });
 // Graphics variables
-var container, stats;
-
+var container, captureContainer;
+var shiftIsDown;
 var camera, controls, scene, renderer;
 var textureLoader;
 var canvasTexture, preloadedMaterial;
@@ -84,11 +84,13 @@ function init() {
 function initGraphics() {
 
 	container = document.getElementById( 'container' );
+	captureContainer = document.getElementById("capture");
+	captureContainer.style.transition = "all 0.30s ease-in-out";
+	captureContainer.style.boxShadow = "0 0 5px rgba(81, 203, 238, 0)";
 
 	camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
 
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color( 0xFFFFFF );
 
 	camera.position.set( - 14, 8, 16 );
 
@@ -106,7 +108,7 @@ function initGraphics() {
 
 	var light = new THREE.DirectionalLight( 0xffffff, 1 );
 	light.position.set( - 10, 18, 5 );
-	light.castShadow = false;
+	light.castShadow = true;
 	var d = 14;
 	light.shadow.camera.left = - d;
 	light.shadow.camera.right = d;
@@ -168,18 +170,11 @@ function createObjects() {
 	// Ground
 	pos.set( 0, - 0.5, 0 );
 	quat.set( 0, 0, 0, 1 );
-	var ground = createParalellepipedWithPhysics( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
-	ground.receiveShadow = false;
-	textureLoader.load( "textures/grid.png", function ( texture ) {
-
-		texture.wrapS = THREE.RepeatWrapping;
-		texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.set( 40, 40 );
-		ground.material.map = texture;
-		ground.material.needsUpdate = true;
-		ground.material.opacity = 0;
-
-	} );
+	var ground = createParalellepipedWithPhysics( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial() );
+	ground.receiveShadow = true;
+	ground.material.transparent = true;
+	ground.material.opacity = 0;
+	ground.material.needsUpdate = true;
 
 	// Tower 1
 	var towerMass = 1000;
@@ -204,8 +199,8 @@ function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material 
 
 function createDebrisFromBreakableObject( object ) {
 
-	object.castShadow = false;
-	object.receiveShadow = false;
+	object.castShadow = true;
+	object.receiveShadow = true;
 
 	var shape = createConvexHullPhysicsShape( object.geometry.attributes.position.array );
 	shape.setMargin( margin );
@@ -325,35 +320,42 @@ function createMaterial( color ) {
 
 function initInput() {
 
-	container.addEventListener( 'mousedown', function ( event ) {
 
-		mouseCoords.set(
-			( event.clientX / window.innerWidth ) * 2 - 1,
-			- ( event.clientY / window.innerHeight ) * 2 + 1
-		);
+	document.addEventListener( 'keydown', function ( event1 ) {
+		console.log("shift pressed")
+		captureContainer.style.boxShadow = "0 0 5px rgba(81, 203, 238, 1)";
+  		if (event1.shiftKey) {
+			captureContainer.addEventListener( 'mousedown', function ( event ) {
+			mouseCoords.set(
+				( event.clientX / window.innerWidth ) * 2 - 1,
+				- ( event.clientY / window.innerHeight ) * 2 + 1
+			);
 
-		raycaster.setFromCamera( mouseCoords, camera );
+			raycaster.setFromCamera( mouseCoords, camera );
 
-		// Creates a ball and throws it
-		var ballMass = 35;
-		var ballRadius = 0.4;
+			// Creates a ball and throws it
+			var ballMass = 400;
+			var ballRadius = 0.4;
 
-		var ball = new THREE.Mesh( new THREE.SphereBufferGeometry( ballRadius, 14, 10 ), ballMaterial );
-		ball.castShadow = false;
-		ball.receiveShadow = false;
-		var ballShape = new Ammo.btSphereShape( ballRadius );
-		ballShape.setMargin( margin );
-		pos.copy( raycaster.ray.direction );
-		pos.add( raycaster.ray.origin );
-		quat.set( 0, 0, 0, 1 );
-		var ballBody = createRigidBody( ball, ballShape, ballMass, pos, quat ).body;
+			var ball = new THREE.Mesh( new THREE.SphereBufferGeometry( ballRadius, 14, 10 ), ballMaterial );
+			ball.castShadow = true;
+			ball.receiveShadow = true;
+			var ballShape = new Ammo.btSphereShape( ballRadius );
+			ballShape.setMargin( margin );
+			pos.copy( raycaster.ray.direction );
+			pos.add( raycaster.ray.origin );
+			quat.set( 0, 0, 0, 1 );
+			var ballBody = createRigidBody( ball, ballShape, ballMass, pos, quat ).body;
 
-		pos.copy( raycaster.ray.direction );
-		pos.multiplyScalar( 24 );
-		ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
-
-	}, false );
-
+			pos.copy( raycaster.ray.direction );
+			pos.multiplyScalar( 24 );
+			ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
+		}, false );
+  		}
+	},false)
+	document.addEventListener( 'keyup', function ( event1 ) {
+		captureContainer.style.boxShadow = "0 0 15px rgba(81, 203, 238, 0)";
+	},false)
 }
 
 function onWindowResize() {
@@ -473,6 +475,8 @@ function updatePhysics( deltaTime ) {
 
 		var fractureImpulse = 250;
 		container.style.opacity = 1;
+		container.style.zIndex = 1;
+		captureContainer.style.opacity = 0;
 
 		if ( breakable0 && ! collided0 && maxImpulse > fractureImpulse ) {
 
