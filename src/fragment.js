@@ -610,7 +610,7 @@ function updatePhysics(deltaTime) {
 function reSetCamera(camera, newObject) {
     var height = mainObjectHeight;
     var dist = 16;
-    var fov = 2 * Math.atan(height / (2 * dist)) * (180 / Math.PI);
+    var fov = 2 * Math.atan(height / (2 * dist + (newObject.geometry.parameters.width / 2))) * (180 / Math.PI);
     camera.fov = fov;
     camera.position.x = newObject.position.x
     camera.position.y = newObject.position.y
