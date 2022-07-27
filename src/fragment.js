@@ -227,6 +227,8 @@ function createObjects() {
     // Tower 1
     var towerMass = power;
     var towerHalfExtents = new THREE.Vector3(mainObjectWidth / 2, mainObjectHeight / 2, mainObjectWidth / 12);
+    console.log(mainObjectWidth)
+    console.log(mainObject)
     pos.set(0, mainObjectHeight / 2 + 0.05, 0);
     quat.set(0, 0, 0, 1);
     console.log(preloadedMaterial)
@@ -610,11 +612,12 @@ function updatePhysics(deltaTime) {
 function reSetCamera(camera, newObject) {
     var height = mainObjectHeight;
     var dist = 10;
-    var fov = 2 * Math.atan(height / (2 * dist + (newObject.geometry.parameters.width / 2))) * (180 / Math.PI);
+    var fov = 2 * Math.atan(height / (2 * (dist))) * (180 / Math.PI);
     camera.fov = fov;
     camera.position.x = newObject.position.x
     camera.position.y = newObject.position.y
     camera.position.z = dist + (newObject.geometry.parameters.depth / 2);
+    console.log(dist + (newObject.geometry.parameters.depth / 2))
     camera.lookAt(newObject.position);
     camera.aspect = mainObjectWidth / mainObjectHeight;
     camera.updateProjectionMatrix();
