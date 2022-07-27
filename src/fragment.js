@@ -88,6 +88,7 @@ function initGraphics() {
     //get renderer specs
     container = document.getElementById('webgl-container');
     container.style.position = "absolute"
+    container.style.display = "none"
     captureContainer = document.getElementById("fr-canvas");
     captureContainer.style.transition = "all 0.10s ease-in-out";
     captureContainer.style.boxShadow = "0 0 5px rgba(81, 203, 238, 0)";
@@ -385,7 +386,8 @@ function addMouseDownListener() {
         );
         animStarted = true;
         raycaster.setFromCamera(mouseCoords, camera);
-            console.log("pressd")
+        container.style.display = "block"
+
         // Creates a ball and throws it
         var ballMass = 400;
         var ballRadius = 0.4;
@@ -525,7 +527,6 @@ function updatePhysics(deltaTime) {
         // Subdivision
 
         var fractureImpulse = 250;
-        container.style.opacity = 1;
         container.style.zIndex = 1;
         captureContainer.style.opacity = 0;
 
