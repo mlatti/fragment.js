@@ -409,7 +409,7 @@ function addMouseDownListener() {
             pos.z = -pos.z
         }
         pos.multiplyScalar(24);
-        ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
+        ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y/2, pos.z));
     }, false);
 
 }
