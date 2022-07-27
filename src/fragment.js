@@ -223,10 +223,11 @@ function createObjects() {
     ground.material.transparent = true;
     ground.material.opacity = 0;
     ground.material.needsUpdate = true;
+    var mainObjectDepth = (mainObjectWidth<mainObjectHeight) ? mainObjectWidth : mainObjectHeight
 
     // Tower 1
     var towerMass = power;
-    var towerHalfExtents = new THREE.Vector3(mainObjectWidth / 2, mainObjectHeight / 2, mainObjectWidth / 12);
+    var towerHalfExtents = new THREE.Vector3(mainObjectWidth / 2, mainObjectHeight / 2, mainObjectDepth / 12);
     console.log(mainObjectWidth)
     console.log(mainObject)
     pos.set(0, mainObjectHeight / 2 + 0.05, 0);
