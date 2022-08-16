@@ -37,4 +37,25 @@ Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas.
 #### Customisation
 You may change the behavior/look 'n feel by adding the following classes to `#webgl-canvas`:
 
-`.fr-power-h` - high-impulse break.
+`.fr-power-h` - high-impulse break. Default value is medium.
+
+`.fr-power-m` - medium-impulse break. Default value is medium.
+
+`.fr-power-l` - low-impulse break. Default value is medium.
+
+`.fr-behind` - impulse will hit the wall from behind. By default, impulse comes from the front.
+
+`.fr-visible-ball` - the wrecking ball is visible. Default value is invisible.
+
+`.fr-backgroundcolor-red` - sets background color to red. Change red to any css color value. Default vlaue is transparent.
+
+`.fr-bordercolor-red` - sets the color of non-textured sides of fragments to red. Change red to any css color value. Default value is a lighter shade of the background color of `#fr-canvas`.
+
+#### Examples
+[Basic usage](https://jsfiddle.net/mlatti/3od7a0L2/12/) 
+
+[Ball hits the wall from behind](https://jsfiddle.net/mlatti/3od7a0L2/13/) 
+
+[Using a button as trigger](https://jsfiddle.net/mlatti/246aw019/95/)
+
+[Customised background, border and visible ball](https://jsfiddle.net/mlatti/246aw019/92/)
