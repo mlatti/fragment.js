@@ -36,4 +36,4 @@ Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas.
 
 #### Customisation
 You may change the behavior/look 'n feel by adding the following classes to `#webgl-canvas`:
-`#fr-power-h` - high impulse break.
+`.fr-power-h` - high impulse break.
