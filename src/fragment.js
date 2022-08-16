@@ -65,7 +65,7 @@ var triggerEl = container
 var rigidBodies = [];
 
 var windowResizing = false;
-
+ 
 var objectsToRemove = [];
 for (var i = 0; i < 500; i++) {
 
@@ -74,7 +74,7 @@ for (var i = 0; i < 500; i++) {
 }
 var numObjectsToRemove = 0;
 
-
+//initialize
 function init() {
     initGraphics();
     initPhysics();
