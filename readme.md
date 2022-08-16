@@ -5,7 +5,7 @@ Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas.
 1. Not optimised for mobile
 2. Target elements need a certain size/volume. Small elements may not be fractured, just pushed around.
 3. Only 1 element may be broken on one page.
-4. No respawn by default. If you want to test without reloading the page, resize the screen.
+4. No respawn by default.
 
 #### Usage
 1. Import Ammo.js in the head element.
