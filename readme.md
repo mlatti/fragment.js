@@ -1,4 +1,4 @@
-### Fragment.js - a THREE.js driven UI fracture effect library.
+### Fragment.js - a THREE.js driven UI fracture effect.
 Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas. 
 
 #### Limitations/TODO
