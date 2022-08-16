@@ -1,5 +1,5 @@
 ### Fragment.js - a THREE.js driven UI fracture effect.
-Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas. 
+Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas. An html element is projected to a 3d object and broken apart with an invisible ball, with real time physics.
 
 #### Limitations/TODO
 1. Not optimised for mobile
