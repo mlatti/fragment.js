@@ -7,11 +7,22 @@ import {
 // - Global variables -
 var mainObject, mainObjectHeight, mainObjectWidth, mainCanvas;
 var canvasImage;
+var borderColor;
 addEventListener('DOMContentLoaded', (event) => {
-    html2canvas(document.querySelector("#fr-canvas"), {
+    var targetElement = document.querySelector("#fr-canvas")
+    var classList = targetElement.classList
+    classList = classList.value.split(/[ ,]+/)
+    for (var i =0;i<classList.length;i++){
+        if (classList[i].startsWith("fr-bordercolor-")){
+            borderColor = classList[i].split("fr-bordercolor-")[1]
+        }
+    }
+    
+    html2canvas(targetElement, {
         allowTaint: true,
         useCORS: true
     }).then(canvas => {
+        targetElement.style.border = "none"
         mainObjectHeight = canvas.style.height.split("px")[0] / 100;
         mainObjectWidth = canvas.style.width.split("px")[0] / 100;
         mainCanvas = canvas;
@@ -35,15 +46,15 @@ var broken = false;
 var canvasTexture, preloadedMaterial;
 var mouseCoords = new THREE.Vector2();
 var raycaster = new THREE.Raycaster();
+var ballVisible = 0
 var ballMaterial = new THREE.MeshPhongMaterial({
     color: 0x202020,
-    transparent: true,
-    opacity: ballVisible
+    transparent: true
 });
-var ballVisible = 0
 var clock = null;
 var effect = "frontal"
 var power = 500;
+var friction
 
 // Physics variables
 var gravityConstant = 7.8;
@@ -99,8 +110,16 @@ function initGraphics() {
         effect = "behind"
     }
     
+    if(classList.contains("fr-slide")){
+        console.log("effect is now behind")
+        friction = 0.5
+    }else{
+        friction = 2.3
+    }
+
     if(classList.contains("fr-visible-ball")){
         ballVisible = 1
+        ballMaterial.opacity = ballVisible
     }
     
     if(classList.contains("fr-power-l")){
@@ -118,6 +137,7 @@ function initGraphics() {
         triggerEl.style.zIndex = 2
         container.style.pointerEvents = "none"
     }else{
+        console.log("setting the container as trigger")
         triggerEl = container
     }
 
@@ -160,10 +180,20 @@ function initGraphics() {
 
     //texture
     canvasTexture = new THREE.CanvasTexture(mainCanvas);
-    preloadedMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        map: canvasTexture
-    });
+    console.log("color is ",borderColor)
+    if(borderColor){
+        preloadedMaterial = [new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            map: canvasTexture
+        }),   new THREE.MeshBasicMaterial({
+            color: new THREE.Color( borderColor )
+        })];
+    }else{
+        preloadedMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            map: canvasTexture
+        })
+    }
 
     //when window is resize, rerender canvas texture and redraw 3d world
     window.addEventListener('resize', () => {
@@ -327,7 +357,7 @@ function createRigidBody(object, physicsShape, mass, pos, quat, vel, angVel) {
     var rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, physicsShape, localInertia);
     var body = new Ammo.btRigidBody(rbInfo);
 
-    body.setFriction(0.5);
+    body.setFriction(friction);
 
     if (vel) {
 
@@ -378,6 +408,7 @@ function createMaterial(color) {
 }
 
 function addMouseDownListener() {
+    console.log("triggerEl")
     console.log(triggerEl)
     triggerEl.addEventListener('mousedown', function (event) {
         mouseCoords.set(
@@ -406,11 +437,12 @@ function addMouseDownListener() {
         console.log("direction: ",raycaster.ray.direction)
 
         pos.copy(raycaster.ray.direction);
+        //TODO: if triggerel = container, the ball should follow the mouse
         pos.x = 0
         if (effect=="behind"){
             pos.z = -pos.z
         }
-        pos.multiplyScalar(24);
+        pos.multiplyScalar(20);
         ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
     }, false);
 
@@ -564,7 +596,7 @@ function updatePhysics(deltaTime) {
                     var b;
                     var c;
                     if (normal.z == 1) {
-                        //face.materialIndex = 0;
+                        face.materialIndex = 0;
                         var vector = fragment.geometry.vertices[face.b].clone();
                         a = createTestBall(fragment.geometry.vertices[face.a], fragment.position, threeObject0.position, threeObject0.geometry.boundingBox);
                         b = createTestBall(fragment.geometry.vertices[face.b], fragment.position, threeObject0.position, threeObject0.geometry.boundingBox);
