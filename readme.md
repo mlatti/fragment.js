@@ -15,7 +15,7 @@ Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas.
 
 2. Import Fragment.js at the end of your body element. This will also import Three.js and all other dependencies.
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/mlatti/fragment.js@1.0.8/src/fragment.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/mlatti/fragment.js/src/fragment.js"></script>
 ```
 
 3. Add the webgl container with the following id: `#webgl-container`. Tag the target element (i.e. the element which will be broken) with the following id: `#fr-canvas`. Make sure these elements are siblings and their parent is relatively positioned.
@@ -52,10 +52,10 @@ You may change the behavior/look 'n feel by adding the following classes to `#we
 `.fr-bordercolor-red` - sets the color of non-textured sides of fragments to red. Change red to any css color value. Default value is a lighter shade of the background color of `#fr-canvas`.
 
 #### Examples
-[Basic usage](https://jsfiddle.net/mlatti/3od7a0L2/12/) 
+[Basic usage](https://jsfiddle.net/mlatti/3od7a0L2/18/) 
 
-[Ball hits the wall from behind](https://jsfiddle.net/mlatti/3od7a0L2/13/) 
+[Ball hits the wall from behind](https://jsfiddle.net/mlatti/3od7a0L2/19/) 
 
-[Using a button as trigger](https://jsfiddle.net/mlatti/246aw019/95/)
+[Using a button as trigger](https://jsfiddle.net/mlatti/246aw019/99/)
 
-[Customised background, border and visible ball](https://jsfiddle.net/mlatti/246aw019/92/)
+[Customised background, border and visible ball](https://jsfiddle.net/mlatti/246aw019/97/)
