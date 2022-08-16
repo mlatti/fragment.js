@@ -38,8 +38,9 @@ var raycaster = new THREE.Raycaster();
 var ballMaterial = new THREE.MeshPhongMaterial({
     color: 0x202020,
     transparent: true,
-    opacity: 0
+    opacity: ballVisible
 });
+var ballVisible = 0
 var clock = null;
 var effect = "frontal"
 var power = 500;
@@ -96,6 +97,10 @@ function initGraphics() {
     if(classList.contains("fr-behind")){
         console.log("effect is now behind")
         effect = "behind"
+    }
+    
+    if(classList.contains("fr-visible-ball")){
+        ballVisible = 1
     }
     
     if(classList.contains("fr-power-l")){
@@ -226,12 +231,10 @@ function createObjects() {
 
     // Tower 1
     var towerMass = power;
-    var towerHalfExtents = new THREE.Vector3(mainObjectWidth / 2, mainObjectHeight / 2, mainObjectWidth / 12);
-    console.log(mainObjectWidth)
-    console.log(mainObject)
+    var towerHalfExtents = new THREE.Vector3(mainObjectWidth / 2, mainObjectHeight / 2, mainObjectWidth / 6);
+
     pos.set(0, mainObjectHeight / 2 + 0.05, 0);
     quat.set(0, 0, 0, 1);
-    console.log(preloadedMaterial)
     mainObject = createObject(towerMass, towerHalfExtents, pos, quat, preloadedMaterial);
 
     
@@ -250,7 +253,6 @@ function createParalellepipedWithPhysics(sx, sy, sz, mass, pos, quat, material) 
 }
 
 function createDebrisFromBreakableObject(object) {
-
     object.castShadow = true;
     object.receiveShadow = true;
 
@@ -404,6 +406,7 @@ function addMouseDownListener() {
         console.log("direction: ",raycaster.ray.direction)
 
         pos.copy(raycaster.ray.direction);
+        pos.x = 0
         if (effect=="behind"){
             pos.z = -pos.z
         }
@@ -417,7 +420,7 @@ function animate() {
 
     requestAnimationFrame(animate);
 
-    render();;
+    render();
 
 }
 
@@ -527,8 +530,11 @@ function updatePhysics(deltaTime) {
         container.style.opacity = 1;
         container.style.zIndex = 1;
         captureContainer.style.opacity = 0;
+        console.log("impulse",maxImpulse)
 
         if (breakable0 && !collided0 && maxImpulse > fractureImpulse) {
+            console.log("passed break checks ",maxImpulse)
+    
 
             var debris = convexBreaker.subdivideByImpact(threeObject0, impactPoint, impactNormal, 1, 2, 1.5);
             threeObject0.geometry.computeBoundingBox();
