@@ -18,13 +18,13 @@ Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas.
 <script type="module" src="https://cdn.jsdelivr.net/gh/mlatti/fragment.js@1.0.8/src/fragment.js"></script>
 ```
 
-3. Add the webgl container. Tag the target element (which will be broken) with the following id-: #fr-canvas. Make sure these elements are siblings and their parent is relatively positioned.
+3. Add the webgl container with the following id: `#webgl-container`. Tag the target element (i.e. the element which will be broken) with the following id: `#fr-canvas`. Make sure these elements are siblings and their parent is relatively positioned.
 ```html
   <div id="webgl-container" style="position: absolute;"></div>
   <div id="fr-canvas"><div >
 ```
 
-4. Optional: by default, fracture will be triggered by clicking on the target element. You can add a trigger element (such as a button) by using the following id: #fr-trigger. The z-index of this trigger element must be > 1.
+4. Optional: by default, fracture will be triggered by clicking on the target element. You can add a trigger element (such as a button) by using the following id: `#fr-trigger`. The z-index of this trigger element must be > 1.
 ```html
   <div id="webgl-container" style="position: absolute;"></div>
   <div id="fr-canvas">
@@ -35,4 +35,5 @@ Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas.
 ```
 
 #### Customisation
-
+You may change the behavior/look 'n feel by adding the following classes to `#webgl-canvas`:
+`#fr-power-h` - high impulse break.
