@@ -9,6 +9,7 @@ var mainObject, mainObjectHeight, mainObjectWidth, mainCanvas, backgroundObject;
 var canvasImage;
 addEventListener('DOMContentLoaded', (event) => {
     var targetElement = document.querySelector("#fr-canvas")
+    targetElement.style.opacity = 1;
     var classList = targetElement.classList
     
     html2canvas(targetElement, {
