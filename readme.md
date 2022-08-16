@@ -6,6 +6,7 @@ Fragment.js is built with THREE.js, the Ammo.js physics library and html2canvas.
 2. Target elements need a certain size/volume. Small elements may not be fractured, just pushed around.
 3. Only 1 element may be broken on one page.
 4. No respawn.
+5. Limitations of html2canvas apply (such as: no image or svg support).
 
 #### Usage
 1. Import Ammo.js in the head element.
