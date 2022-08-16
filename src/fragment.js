@@ -5,18 +5,11 @@ import {
 } from 'https://unpkg.com/three@0.119.0/examples/jsm/misc/ConvexObjectBreaker.js'
 
 // - Global variables -
-var mainObject, mainObjectHeight, mainObjectWidth, mainCanvas;
+var mainObject, mainObjectHeight, mainObjectWidth, mainCanvas, backgroundObject;
 var canvasImage;
-var borderColor;
 addEventListener('DOMContentLoaded', (event) => {
     var targetElement = document.querySelector("#fr-canvas")
     var classList = targetElement.classList
-    classList = classList.value.split(/[ ,]+/)
-    for (var i =0;i<classList.length;i++){
-        if (classList[i].startsWith("fr-bordercolor-")){
-            borderColor = classList[i].split("fr-bordercolor-")[1]
-        }
-    }
     
     html2canvas(targetElement, {
         allowTaint: true,
@@ -49,10 +42,13 @@ var raycaster = new THREE.Raycaster();
 var ballVisible = 0
 var ballMaterial = new THREE.MeshPhongMaterial({
     color: 0x202020,
-    transparent: true
+    transparent: true, 
+    opacity: ballVisible
 });
 var clock = null;
 var effect = "frontal"
+var borderColor;
+var backgroundColor = 0xffffff;
 var power = 500;
 var friction
 
@@ -130,6 +126,15 @@ function initGraphics() {
         power = 100
     }
 
+    var classListSplit = classList.value.split(/[ ,]+/)
+    for (var i =0;i<classListSplit.length;i++){
+        if (classListSplit[i].startsWith("fr-bordercolor-")){
+            borderColor = classListSplit[i].split("fr-bordercolor-")[1]
+        }
+        if (classListSplit[i].startsWith("fr-backgroundcolor-")){
+            backgroundColor = classListSplit[i].split("fr-backgroundcolor-")[1]
+        }
+    }
 
     var triggerTemp = document.getElementById('fr-trigger');
     if(triggerTemp){
@@ -153,6 +158,7 @@ function initGraphics() {
     });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(mainObjectWidth * 100, mainObjectHeight * 100);
+    console.log("backgroundc",backgroundColor)
     renderer.setClearColor(0x000000, 0); // the default
     renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
@@ -180,7 +186,6 @@ function initGraphics() {
 
     //texture
     canvasTexture = new THREE.CanvasTexture(mainCanvas);
-    console.log("color is ",borderColor)
     if(borderColor){
         preloadedMaterial = [new THREE.MeshBasicMaterial({
             color: 0xffffff,
@@ -238,12 +243,22 @@ function initPhysics() {
 }
 
 function createObject(mass, halfExtents, pos, quat, material) {
+    backgroundObject = new THREE.Mesh(new THREE.BoxBufferGeometry(halfExtents.x * 10, halfExtents.y * 10, halfExtents.z * 2), new THREE.MeshBasicMaterial());
+    backgroundObject.receiveShadow = true;
+    backgroundObject.material.color = new THREE.Color(backgroundColor)
+    backgroundObject.visible = false
+    backgroundObject.position.copy(pos);
+    backgroundObject.position.z = backgroundObject.position.z-25
+    backgroundObject.quaternion.copy(quat);
+    scene.add(backgroundObject)
+    
     var object = new THREE.Mesh(new THREE.BoxBufferGeometry(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2), material);
     object.position.copy(pos);
     object.quaternion.copy(quat);
     object.geometry.computeBoundingBox();
     convexBreaker.prepareBreakableObject(object, mass, new THREE.Vector3(), new THREE.Vector3(), true);
     object = createDebrisFromBreakableObject(object);
+
     return object;
 
 }
@@ -559,10 +574,10 @@ function updatePhysics(deltaTime) {
         // Subdivision
 
         var fractureImpulse = 250;
-        container.style.opacity = 1;
-        container.style.zIndex = 1;
         captureContainer.style.opacity = 0;
-        console.log("impulse",maxImpulse)
+        if (backgroundColor != 0xffffff){
+            backgroundObject.visible = true
+        }
 
         if (breakable0 && !collided0 && maxImpulse > fractureImpulse) {
             console.log("passed break checks ",maxImpulse)
